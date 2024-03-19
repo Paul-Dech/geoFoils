@@ -54,7 +54,7 @@ def writeGeo(data, name):
 
     with open(outputfile, 'w') as f:
         f.write(f'/* Airfoil {name} */\n')
-        f.write('// This file was generated automatically using geoFoils.py\n')
+        f.write('// This file was generated automatically using geoFoils (https://github.com/Paul-Dech/geoFoils)\n')
         f.write('// @author: Paul Dechamps\n\n')
         f.write('// Geometry\n')
         f.write('DefineConstant[ xLgt = { 5.0, Name "Domain length (x-dir)" }  ];\n')
