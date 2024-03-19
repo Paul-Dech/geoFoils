@@ -2,13 +2,13 @@
 Paul Dechamps, 2024.
 
 geoFoils is a tool used to write `.geo` files (gmsh) for the softwares [_DARTFLO_][dartflo-repo] and [_BLASTER_][blaster-repo].
-The code only works for 2D airfoils and generates geo files with adapted mesh parameters that can readily be used like the test cases present in both softwares. To generate CFD meshes around lifting surfaces in 3D, use [_GmshCFD_][gmshcfd-repo] (@acrovato).
+The code only works for 2D airfoils and generates `.geo` files with adapted mesh parameters that can readily be used like in the test cases present in the software. To generate CFD meshes around lifting surfaces in 3D, use [_GmshCFD_][gmshcfd-repo] (@acrovato).
 
 ## Airfoil type
 
-Only **sharp trailing edge airfoil** can be used (to form the wake). The airfoil must be formated in **seilig format**.
+Only **sharp trailing edge airfoils** can be used (to form the wake). The airfoil must be formatted in **seilig format**.
 
-Airfoil data can be downloaded from [_Airfoil Tools_][airfoiltools-website] of found in the [_UIUC database_][uiuc-website].
+Airfoil data can be downloaded from [Airfoil Tools_][airfoiltools-website] or found in the [_UIUC database_][uiuc-website].
 
 A good practice is to send the airfoil to the plotter in Airfoil Tools (if possible) and impose the parameters and the trailing edge type.
 
@@ -18,7 +18,7 @@ To execute the code, use the following command line
 
 `python3 geoFoils.py path/to/airfoil.dat`
 
-an additional argument `--name` can be used to define the name of the output `.geo` file.
+An additional argument `--name` can be used to define the name of the output `.geo` file.
 
 The output file is written in a workspace/ folder.
 
