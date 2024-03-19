@@ -8,7 +8,7 @@ The code only works for 2D airfoils and generates `.geo` files with adapted mesh
 
 Only **sharp trailing edge airfoils** can be used (to form the wake). The airfoil must be formatted in **seilig format**.
 
-Airfoil data can be downloaded from [Airfoil Tools_][airfoiltools-website] or found in the [_UIUC database_][uiuc-website].
+Airfoil data can be downloaded from [_Airfoil Tools_][airfoiltools-website] or found in the [_UIUC database_][uiuc-website].
 
 A good practice is to send the airfoil to the plotter in Airfoil Tools (if possible) and impose the parameters and the trailing edge type.
 
