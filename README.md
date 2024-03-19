@@ -1,7 +1,7 @@
 # geoFoils
 Paul Dechamps, 2024.
 
-geoFoils is a tool used to write .geo files (gmsh) for the softwares [_DARTFLO_][dartflo-repo] and [_BLASTER_][blaster-repo].
+geoFoils is a tool used to write `.geo` files (gmsh) for the softwares [_DARTFLO_][dartflo-repo] and [_BLASTER_][blaster-repo].
 The code only works for 2D airfoils and generates geo files with adapted mesh parameters that can readily be used like the test cases present in both softwares. To generate CFD meshes around lifting surfaces in 3D, use [_GmshCFD_][gmshcfd-repo] (@acrovato).
 
 ## Airfoil type
@@ -12,14 +12,36 @@ Airfoil data can be downloaded from [_Airfoil Tools_][airfoiltools-website] of f
 
 A good practice is to send the airfoil to the plotter in Airfoil Tools (if possible) and impose the parameters and the trailing edge type.
 
+## Execution
+
+To execute the code, use the following command line 
+
+`python3 geoFoils.py path/to/airfoil.dat`
+
+an additional argument `--name` can be used to define the name of the output `.geo` file.
+
+The output file is written in a workspace/ folder.
+
+### Example
+
+The following line will generate a `.geo` file for the NACA 0012 airfoil
+
+`python3 geoFoils.py foils/n0012_sharp.dat --name naca0012_airfoil`
+
 
 ## Required packages
 
-The code requires the following packages
- - python3 (The code was written and tested with python@3.11.8)
+The code requires the following packages (author's version)
+- python3 (3.11.8)
 - numpy (1.26.1)
-- pandas (2.1.3) (you can use numpy if your airfoil file is formatted correctly (i.e no double space between columns) (geoFoils.py l.18-19 -> l.20))
-- gmsh (4.12.2) to read the output files
+- pandas (2.1.3)
+- gmsh (4.12.2)
+
+### Remark
+
+Numpy can be used instead of pandas to read input files as long as the airfoil file is formatted correctly (*i.e.* no double space between columns)
+
+Replace l.18 & 19 by l.20 in geoFoils.py.
 
 
 
