@@ -18,7 +18,17 @@ To execute the code, use the following command line
 
 `python3 geoFoils.py path/to/airfoil.dat`
 
-An additional argument `--name` can be used to define the name of the output `.geo` file.
+The additional argument `--name` can be used to define the name of the output `.geo` file.
+
+The additional argument `--gr` can be used convert to the farfield mesh size parameter to the growth ratio of the elements size. In that case, msF is computed using the following formula.
+
+$$ms_{F} = ms_{Le} g_r^{(n - 1)},$$
+
+where $ms_F$ is the farfield mesh size, $ms_{Le}$ is the leading edge mesh size, $g_r$ is the growth ratio and
+
+$$n = \frac{\log_{10}(1 - \frac{(1 - g_r) L_x}{ms_{Le}})}{\log_{10}(g_r)}.$$
+
+with $L_x$ the domain length in the $x$ direction, defined by xLgt.
 
 The output file is written in a workspace/ folder.
 
@@ -26,7 +36,7 @@ The output file is written in a workspace/ folder.
 
 The following line will generate a `.geo` file for the NACA 0012 airfoil
 
-`python3 geoFoils.py foils/n0012_sharp.dat --name naca0012_airfoil`
+`python3 geoFoils.py foils/n0012_sharp.dat --name naca0012_airfoil --gr=True`
 
 
 ## Required packages

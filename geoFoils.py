@@ -28,11 +28,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('file', help='airfoil dat files')
     parser.add_argument('--name', help='geo file name', type=str, default=None)
+    parser.add_argument('--gr', help='Growth ratio', type=bool, default=False)
     args = parser.parse_args()
     if args.name is None:
         name = os.path.split(args.file)[1].split('.')[0]
     else:
         name = args.name
+    gr = args.gr
     # Ignore double space when loading the data
     df = pd.read_csv(args.file, sep='\s+', header=None)
     data = np.array(df)
@@ -40,9 +42,9 @@ def main():
     checkAirfoil(data)
 
     print('Writing GEO file for airfoil: ' + name)
-    writeGeo(data, name)
+    writeGeo(data, name, gr)
 
-def writeGeo(data, name):
+def writeGeo(data, name, gr=False):
     # create a geo file in a folder named 'output'
     thisdir = os.path.split(os.path.abspath(__file__))[0]
     outputdir = os.path.join(thisdir, 'workspace')
@@ -61,7 +63,10 @@ def writeGeo(data, name):
         f.write('DefineConstant[ yLgt = { 5.0, Name "Domain length (y-dir)" }  ];\n')
         f.write('\n')
         f.write('// Mesh\n')
-        f.write('DefineConstant[ msF = { 1.0, Name "Farfield mesh size" }  ];\n')
+        if gr:
+            f.write('DefineConstant[ growthRatio = { 1.0, Name "Growth Ratio" }  ];\n')
+        else:
+            f.write('DefineConstant[ msF = { 1.0, Name "Farfield mesh size" }  ];\n')
         f.write('DefineConstant[ msTe = { 0.01, Name "Airfoil TE mesh size" }  ];\n')
         f.write('DefineConstant[ msLe = { 0.01, Name "Airfoil LE mesh size" }  ];\n')
         f.write('\n')
@@ -70,6 +75,13 @@ def writeGeo(data, name):
         f.write('DefineConstant[ angle = { 0*Pi/180, Name "Angle of rotation" }  ];\n')
         f.write('Geometry.AutoCoherence = 0; // Needed so that gmsh does not remove duplicate\n')
         f.write('\n')
+        if gr:
+            f.write('If (growthRatio == 1.0)\n')
+            f.write('   msF = msLe;\n')
+            f.write('Else\n')
+            f.write('   n = Log(1 - (1 - growthRatio) * xLgt / msLe) / Log(growthRatio);\n')
+            f.write('   msF = msLe * growthRatio^(n - 1);\n')
+            f.write('EndIf\n')
         ## Airfoil
         f.write('/**************\n Geometry\n **************/\n')
         f.write('Te = 1; // trailing edge\n')
@@ -87,8 +99,8 @@ def writeGeo(data, name):
         
         f.write('\n')
         # Spline goes from 1 to the number of the leading edge point in {0,0,0}
-        f.write(f'Spline(1) = {{1:{np.where(data[:,0] == 0)[0][0]+1}}}; // upper side\n')
-        f.write(f'Spline(2) = {{{np.where(data[:,0] == 0)[0][0]+1}:{data.shape[0]-1}, 1}}; // lower side\n')
+        f.write(f'Spline(1) = {{1,{data.shape[0]-1}:{data.shape[0]-1 - np.where(data[:,0] == 0)[0][0]+1}}}; // lower side\n')
+        f.write(f'Spline(2) = {{{np.where(data[:,0] == 0)[0][0]+1}:1}}; // upper side\n')
         f.write('\n')
         f.write('// Rotation\n')
         f.write('If (angle != 0)\n')
@@ -117,8 +129,8 @@ def writeGeo(data, name):
         f.write('Line(10008) = {Te, 10001};\n')
         f.write('\n')
         f.write('// Internal field\n')
-        f.write('Line Loop(20001) = {10007, -10003, -10002, -10001, -10008, 1};\n')
-        f.write('Line Loop(20002) = {10007, 10004, 10005, 10006, -10008, -2};\n')
+        f.write('Line Loop(20001) = {10008, 10001, 10002, 10003, -10007, 2};\n')
+        f.write('Line Loop(20002) = {10007, 10004, 10005, 10006, -10008, 1};\n')
         f.write('Plane Surface(30001) = {20001};\n')
         f.write('Plane Surface(30002) = {20002};\n')
         f.write('\n')
@@ -143,15 +155,15 @@ def writeGeo(data, name):
 def checkAirfoil(data):
     # Check that the input contains two columns
     if data.shape[1] != 2:
-        sys.exit('Error: The input file must contain two columns')
+        raise RuntimeError('Error: The input file must contain two columns')
     # Check that the airfoil is in Selig format
     if np.all(data[0,:] != data[-1,:]):
-        sys.exit('Error: The airfoil must be in Selig format')
-    if not np.any(data[:,0] == 0):
-        sys.exit('Error: The airfoil has no point on the leading edge')
+        raise RuntimeError('Error: The airfoil must be in Selig format')
+    if not np.any(data[:,0] == 0.):
+        raise RuntimeError('Error: The airfoil has no point on the leading edge')
     # Check if the trailing edge is sharp
     if data[0,1] != data[-1,1]:
-        sys.exit('Error: The airfoil has a blunt trailing edge')
+        raise RuntimeError('Error: The airfoil has a blunt trailing edge')
 
 if __name__ == '__main__':
     main()
