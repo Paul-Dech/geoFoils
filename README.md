@@ -1,8 +1,8 @@
 # geoFoils
 Paul Dechamps, 2024.
 
-geoFoils is a tool used to write `.geo` files (gmsh) for the softwares [_DARTFLO_][dartflo-repo] and [_BLASTER_][blaster-repo].
-The code only works for 2D airfoils and generates `.geo` files with adapted mesh parameters that can readily be used like in the test cases present in the software. To generate CFD meshes around lifting surfaces in 3D, use [_GmshCFD_][gmshcfd-repo] (@acrovato).
+`geoFoils` is a tool used to write `.geo` files (gmsh) for the softwares [_DARTFLO_][dartflo-repo] and [_BLASTER_][blaster-repo].
+The code only works for 2D airfoils and generates `.geo` files with adapted mesh parameters that can readily be used like in the test cases present in the software. The script `ransFoils.py` can be used to generate an unstructured mesh in a circular domain with a boundary layer mesh near the airfoil. To generate CFD meshes around lifting surfaces in 3D, use [_GmshCFD_][gmshcfd-repo] (@acrovato).
 
 ## Airfoil type
 
@@ -14,7 +14,7 @@ A good practice is to send the airfoil to the plotter in Airfoil Tools (if possi
 
 ## Execution
 
-To execute the code, use the following command line 
+To execute the code, use the following command line
 
 `python3 geoFoils.py path/to/airfoil.dat`
 

@@ -28,7 +28,7 @@ from math import atan, cos, sin, floor, pi
 
 def generateAirfoil(naca, n=100, c=1.0):
     print('info: Generating NACA' + naca + ' airfoil', end='...')
-    
+
     # Airfoil parameters
     tau = float(naca[-2:])/100
     epsilon = float(naca[0])/100
@@ -41,15 +41,15 @@ def generateAirfoil(naca, n=100, c=1.0):
     writeAirfoil(x, y, naca)
     print('done')
     return np.round(np.column_stack((x, y)), 14)
-    
+
 def naca4digitCoord(X, c, tau, epsilon, p):
     """Get X and Y-coord of NACA 4-digit associated to a X vector
     """
     T = 10 * tau * c * (
-          0.2969 * np.sqrt(X/c) 
-        - 0.1260 * (X/c) 
-        - 0.3537 * (X/c)**2 
-        + 0.2843 * (X/c)**3 
+          0.2969 * np.sqrt(X/c)
+        - 0.1260 * (X/c)
+        - 0.3537 * (X/c)**2
+        + 0.2843 * (X/c)**3
         - 0.1015 * (X/c)**4
     ) # Thickness
 
@@ -70,15 +70,15 @@ def naca4digitCoord(X, c, tau, epsilon, p):
             dYBar_dx[i] = (2 * epsilon)/((1 - p)**2) * (p - x/c)
 
         # Final x & y coordinates
-        if i <= len(X)/2 - 1: 
+        if i <= len(X)/2 - 1:
             # Lower surface
             yB[i] = YBar[i] - 0.5 * T[i] * cos(atan(dYBar_dx[i]))
             xB[i] = X[i]    + 0.5 * T[i] * sin(atan(dYBar_dx[i]))
-        else: 
+        else:
             # Upper surface
             yB[i] = YBar[i] + 0.5 * T[i] * cos(atan(dYBar_dx[i]))
             xB[i] = X[i]    - 0.5 * T[i] * sin(atan(dYBar_dx[i]))
-            
+
     return (np.flip(xB), np.flip(yB))
 
 def cosineSpacing(c, nbPanel):

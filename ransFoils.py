@@ -34,7 +34,7 @@ def main():
     parser.add_argument('--points', help='Number of elements on the airfoil', type=int, default=100)
     parser.add_argument('--name', help='geo file name', type=str, default=None)
     args = parser.parse_args()
-    
+
     if args.f:
         if args.name is None:
             name = os.path.split(args.f)[1].split('.')[0]
@@ -72,7 +72,6 @@ def writeGeo(data, name, gr=False):
     outputfile = os.path.join(outputdir, name + '.geo')
 
     # write the geo file
-
     with open(outputfile, 'w') as f:
         f.write(f'/* Airfoil {name}. RANS mesh */\n')
         f.write('// This file was generated automatically using geoFoils v1.0 (https://github.com/Paul-Dech/geoFoils)\n')
@@ -96,7 +95,7 @@ def writeGeo(data, name, gr=False):
         f.write('\n')
         f.write('/**************\n Geometry\n **************/\n')
         f.write('Te = 1; // trailing edge\n')
-        # Find where the leading edge is 
+        # Find where the leading edge is
         f.write(f'Le = {np.where(data[:,0] == 0)[0][0] + 1}; // leading edge\n')
         f.write('\n')
         for i in range(data.shape[0]):
@@ -108,7 +107,7 @@ def writeGeo(data, name, gr=False):
                 f.write(f'Point( {i+1} ) = {{ {data[i,0]}, {data[i,1]}, 0.0, msTe }};\n')
             else:
                 f.write(f'Point( {i+1} ) = {{ {data[i,0]}, {data[i,1]}, 0.0}};\n')
-        
+
         f.write('\n')
         # Spline goes from 1 to the number of the leading edge point in {0,0,0}
         f.write(f'Spline(1) = {{Le:1}}; // upper side\n')
@@ -163,7 +162,6 @@ def checkAirfoil(data):
         raise RuntimeError('Error: The leading edge point is duplicated')
     # Check if upper side is before lower side
     if data[-2,1] > data[1,1]:
-        #write this warning in yellow
         print('\033[93m' + 'Warning: The airfoil is probably not in selig format.' + '\033[0m')
 
 if __name__ == '__main__':
